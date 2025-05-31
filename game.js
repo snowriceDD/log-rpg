@@ -136,6 +136,7 @@ function levelUpCheck() {
 
 function handleCommand(cmd) {
     cmd = cmd.trim();
+    if (cmd === '') return; // 빈 입력은 무시
     if (cmd === '탐험') explore();
     else if (cmd === '상태') showStatus();
     else if (cmd === '회복') heal();
