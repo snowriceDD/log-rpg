@@ -148,7 +148,7 @@ function handleCommand(cmd) {
 
 sendBtn.addEventListener('click', () => {
     const cmd = commandInput.value;
-    if (cmd) {
+    if (cmd.trim() !== '') {
         handleCommand(cmd);
         commandInput.value = '';
         commandInput.focus();
@@ -157,6 +157,7 @@ sendBtn.addEventListener('click', () => {
 
 commandInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
+        e.preventDefault();
         sendBtn.click();
     }
 });
