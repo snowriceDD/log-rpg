@@ -1,4 +1,5 @@
 const log = document.getElementById('log');
+const playerStatus = document.getElementById('player-status');
 const commandInput = document.getElementById('command');
 const sendBtn = document.getElementById('send');
 
@@ -22,9 +23,22 @@ function logMsg(msg) {
     log.scrollTop = log.scrollHeight;
 }
 
+function updatePlayerStatus() {
+    const p = state.player;
+    playerStatus.innerHTML = `
+        <span class="emoji">🧑‍🎤</span>
+        <span>Lv.${p.level} <b>${p.name}</b></span>
+        <span>HP: <b>${p.hp}</b> / ${p.maxHp}</span>
+        <span>ATK: <b>${p.atk}</b></span>
+        <span>GOLD: <b>${p.gold}</b></span>
+        <span>EXP: <b>${p.exp}</b></span>
+    `;
+}
+
 function startGame() {
     logMsg('당신은 모험을 떠나는 용사입니다!');
     logMsg('명령어: "탐험", "상태", "회복", "도움말"');
+    updatePlayerStatus();
 }
 
 function showHelp() {
@@ -38,6 +52,7 @@ function showHelp() {
 function showStatus() {
     const p = state.player;
     logMsg(`Lv.${p.level} ${p.name} | HP: ${p.hp}/${p.maxHp} | ATK: ${p.atk} | GOLD: ${p.gold} | EXP: ${p.exp}`);
+    updatePlayerStatus();
 }
 
 function heal() {
@@ -45,6 +60,7 @@ function heal() {
         state.player.gold -= 10;
         state.player.hp = state.player.maxHp;
         logMsg('HP가 모두 회복되었습니다!');
+        updatePlayerStatus();
     } else {
         logMsg('골드가 부족합니다!');
     }
@@ -78,6 +94,7 @@ function attack() {
     // 플레이어 공격
     m.hp -= p.atk;
     logMsg(`당신이 ${m.name}을(를) 공격! (${p.atk} 데미지)`);
+    updatePlayerStatus();
     if (m.hp <= 0) {
         logMsg(`${m.name}을(를) 물리쳤다! GOLD +${m.gold}, EXP +${m.exp}`);
         p.gold += m.gold;
@@ -85,11 +102,13 @@ function attack() {
         state.inBattle = false;
         state.monster = null;
         levelUpCheck();
+        updatePlayerStatus();
         return;
     }
     // 몬스터 반격
     p.hp -= m.atk;
     logMsg(`${m.name}의 반격! (${m.atk} 데미지)`);
+    updatePlayerStatus();
     if (p.hp <= 0) {
         logMsg('당신은 쓰러졌다... 게임 오버!');
         sendBtn.disabled = true;
@@ -113,6 +132,7 @@ function run() {
         const p = state.player;
         p.hp -= m.atk;
         logMsg(`${m.name}의 공격! (${m.atk} 데미지)`);
+        updatePlayerStatus();
         if (p.hp <= 0) {
             logMsg('당신은 쓰러졌다... 게임 오버!');
             sendBtn.disabled = true;
@@ -131,6 +151,7 @@ function levelUpCheck() {
         p.atk += 2;
         p.hp = p.maxHp;
         logMsg(`레벨 업! Lv.${p.level} (HP: ${p.maxHp}, ATK: ${p.atk})`);
+        updatePlayerStatus();
     }
 }
 
