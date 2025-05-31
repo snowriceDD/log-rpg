@@ -1,4 +1,5 @@
 const log = document.getElementById('log');
+const graphic = document.getElementById('graphic-area');
 const commandInput = document.getElementById('command');
 const sendBtn = document.getElementById('send');
 
@@ -22,9 +23,34 @@ function logMsg(msg) {
     log.scrollTop = log.scrollHeight;
 }
 
+function drawGraphic() {
+    // 플레이어, 몬스터, 배경 등을 간단한 이모지/아스키아트로 표시
+    let html = '';
+    if (state.inBattle && state.monster) {
+        html += `<div style="display:flex;align-items:center;width:100%;justify-content:space-between;">
+            <div style="text-align:center;width:45%;">
+                <div style='font-size:2.5rem;'>🧑‍🎤</div>
+                <div style='font-size:0.9rem;'>${state.player.name}<br>HP:${state.player.hp}/${state.player.maxHp}</div>
+            </div>
+            <div style="text-align:center;width:10%;font-size:2rem;">⚔️</div>
+            <div style="text-align:center;width:45%;">
+                <div style='font-size:2.5rem;'>👾</div>
+                <div style='font-size:0.9rem;'>${state.monster.name}<br>HP:${state.monster.hp}</div>
+            </div>
+        </div>`;
+    } else {
+        html += `<div style="display:flex;align-items:center;width:100%;justify-content:center;">
+            <div style='font-size:2.5rem;'>🧑‍🎤</div>
+            <div style='margin-left:1.5rem;font-size:1.2rem;'>${state.player.name} (HP:${state.player.hp}/${state.player.maxHp})</div>
+        </div>`;
+    }
+    graphic.innerHTML = html;
+}
+
 function startGame() {
     logMsg('당신은 모험을 떠나는 용사입니다!');
     logMsg('명령어: "탐험", "상태", "회복", "도움말"');
+    drawGraphic();
 }
 
 function showHelp() {
@@ -38,6 +64,7 @@ function showHelp() {
 function showStatus() {
     const p = state.player;
     logMsg(`Lv.${p.level} ${p.name} | HP: ${p.hp}/${p.maxHp} | ATK: ${p.atk} | GOLD: ${p.gold} | EXP: ${p.exp}`);
+    drawGraphic();
 }
 
 function heal() {
@@ -45,6 +72,7 @@ function heal() {
         state.player.gold -= 10;
         state.player.hp = state.player.maxHp;
         logMsg('HP가 모두 회복되었습니다!');
+        drawGraphic();
     } else {
         logMsg('골드가 부족합니다!');
     }
@@ -66,6 +94,7 @@ function explore() {
     state.inBattle = true;
     logMsg(`${m.name}이(가) 나타났다! (HP: ${m.hp}, ATK: ${m.atk})`);
     logMsg('명령어: "공격", "도망"');
+    drawGraphic();
 }
 
 function attack() {
@@ -78,6 +107,7 @@ function attack() {
     // 플레이어 공격
     m.hp -= p.atk;
     logMsg(`당신이 ${m.name}을(를) 공격! (${p.atk} 데미지)`);
+    drawGraphic();
     if (m.hp <= 0) {
         logMsg(`${m.name}을(를) 물리쳤다! GOLD +${m.gold}, EXP +${m.exp}`);
         p.gold += m.gold;
@@ -85,11 +115,13 @@ function attack() {
         state.inBattle = false;
         state.monster = null;
         levelUpCheck();
+        drawGraphic();
         return;
     }
     // 몬스터 반격
     p.hp -= m.atk;
     logMsg(`${m.name}의 반격! (${m.atk} 데미지)`);
+    drawGraphic();
     if (p.hp <= 0) {
         logMsg('당신은 쓰러졌다... 게임 오버!');
         sendBtn.disabled = true;
@@ -106,6 +138,7 @@ function run() {
         logMsg('도망에 성공했다!');
         state.inBattle = false;
         state.monster = null;
+        drawGraphic();
     } else {
         logMsg('도망에 실패했다!');
         // 몬스터 반격
@@ -113,6 +146,7 @@ function run() {
         const p = state.player;
         p.hp -= m.atk;
         logMsg(`${m.name}의 공격! (${m.atk} 데미지)`);
+        drawGraphic();
         if (p.hp <= 0) {
             logMsg('당신은 쓰러졌다... 게임 오버!');
             sendBtn.disabled = true;
@@ -131,6 +165,7 @@ function levelUpCheck() {
         p.atk += 2;
         p.hp = p.maxHp;
         logMsg(`레벨 업! Lv.${p.level} (HP: ${p.maxHp}, ATK: ${p.atk})`);
+        drawGraphic();
     }
 }
 
