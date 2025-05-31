@@ -1,6 +1,5 @@
 const log = document.getElementById('log');
 const graphic = document.getElementById('graphic-area');
-if (graphic) drawGraphic();
 const commandInput = document.getElementById('command');
 const sendBtn = document.getElementById('send');
 
