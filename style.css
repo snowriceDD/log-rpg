@@ -26,18 +26,6 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 20px #111;
 }
-#graphic-area {
-    background: #222;
-    width: 100%;
-    height: 120px;
-    border-radius: 5px;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    position: relative;
-}
 #log {
     background: #111;
     height: 300px;
